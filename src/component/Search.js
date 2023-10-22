@@ -3,23 +3,22 @@ import Card from './Card';
 
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [data, setData] = useState([]); // Initialize data as an empty array.
-  const [loading, setLoading] = useState(true); // Flag to track whether data is being loaded.
+  const [data, setData] = useState([]); 
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    // Fetch data from your API and set it to the 'data' state.
-    // Example API call:
+    
     fetch('http://hn.algolia.com/api/v1/search?query=test')
       .then(response => response.json())
       .then(result => {
-        setData(result.hits || []); // Use result.hits, or initialize data as an empty array if result.hits is undefined.
-        setLoading(false); // Set loading to false once data is available.
+        setData(result.hits || []); 
+        setLoading(false); 
       })
       .catch(error => {
         console.error(error);
-        setLoading(false); // Set loading to false on error.
+        setLoading(false);
       });
-  }, []); // Empty dependency array to fetch data only once.
+  }, []); 
 
   const filteredData = data.filter((item) =>
     (item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -31,7 +30,7 @@ export default function Search() {
 
   const handleClick = (e) => {
     e.preventDefault();
-    // You can add additional logic here to perform the search when the button is clicked.
+    
   };
 
   return (
@@ -46,7 +45,7 @@ export default function Search() {
         ) : (
           filteredData.map((item) => (
             <Card
-              key={item.objectID} // Use a unique key property (objectID in this case)
+              key={item.objectID} 
               title={item.title}
               objectID={item.objectID}
               points = {item.points}

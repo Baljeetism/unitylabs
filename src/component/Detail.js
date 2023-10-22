@@ -1,47 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from './Navbar';
+
 
 export default function Detail() {
   const { objectID } = useParams();
   const [item, setItem] = useState({});
+  const [isLoading, setIsLoading] = useState(true); 
   const url = `http://hn.algolia.com/api/v1/items/${objectID}`;
-  const fetchnews=async(link)=>{
-    try {
-        const res = await axios.get(link);
-        setItem(res.data);
-        console.log(res.data);
-    } catch (error) {
-        
-    }
-  }
 
   useEffect(() => {
-    fetchnews(`http://hn.algolia.com/api/v1/items/${objectID}`);
-    // axios.get(url)
-    //   .then((response) => {
-    //     setItem(response.data);
-    //     console.log(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    async function fetchData() {
+      try {
+        const response = await axios.get(url);
+        setItem(response.data);
+        setIsLoading(false); 
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false); 
+      }
+    }
+
+    fetchData();
   }, [url]);
 
   return (
     <div>
-      <Navbar />
-      <h1>{item.title}</h1>
-      <p>Author: {item.author}</p>
-      <p>Points: {item.points}</p>
-      <h2>Comments:</h2>
-      <ul>
-        {item.children &&
-          item.children.map((comment) => (
-            <li key={comment.id}>{comment.text}</li>
-          ))}
-      </ul>
+      
+      {isLoading ? (
+       
+        <p>Loading...</p>
+      ) : (
+        
+        <div>
+          <h1 className='m-4'>{item.title}</h1>
+          <p className='m-4'><h3>Points: </h3>{item.points}</p>
+          <h2 className='m-4'>Comments:</h2>
+          <ul>
+            {item.children &&
+              item.children.map((comment) => (
+                <li key={comment.id} className='d-flex border border-dark m-3 justify-content-around p-4'>{comment.text}</li>
+              ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
